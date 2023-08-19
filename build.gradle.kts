@@ -37,13 +37,15 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    // modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 
     // Kotlin adapter for fabric
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("fabric_kotlin_version")}")
 
     // Kotlin standard library
     modImplementation(kotlin("stdlib", project.property("kotlin_version").toString()))
+
+    modImplementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

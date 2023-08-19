@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "com.example.mixin.client",
+  "package": "me.austin.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ExampleClientMixin"
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,45 +1,46 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "vulcan",
   "version": "${version}",
-  "name": "Example mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Vulcan",
+  "description": ":3",
   "authors": [
     "Me!"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/The-Forecaster",
+    "sources": "https://github.com/The-Forecaster/vulcan"
   },
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/vulcan/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       {
         "adapter": "kotlin",
-        "value": "com.example.ExampleMod"
+        "value": "me.austin.ExampleMod"
       }
     ],
     "client": [
       {
         "adapter": "kotlin",
-        "value": "com.example.ExampleModClient"
+        "value": "me.austin.ExampleModClient"
       }
     ]
   },
   "mixins": [
-    "modid.mixins.json",
+    "vulcan.mixins.json",
     {
       "config": "modid.client.mixins.json",
       "environment": "client"
     }
   ],
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "minecraft": "~1.20.1",
+    "fabricloader": ">=0.14.22",
+    "minecraft": "~1.19",
     "java": ">=17",
-    "fabric-api": "*"
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=1.10.8+kotlin.1.9.0"
   },
   "suggests": {
     "another-mod": "*"
