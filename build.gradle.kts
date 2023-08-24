@@ -47,7 +47,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("fabric_kotlin_version")}")
 
     // Kotlin standard library
-    modImplementation(kotlin("stdlib", project.property("kotlin_version").toString()))
+    modImplementation(kotlin("stdlib", "${project.property("kotlin_version")}"))
 
     modImplementation(files("libs/rush-${project.property("rush_version")}.jar"))
 
