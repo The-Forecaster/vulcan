@@ -18,6 +18,10 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+
+    flatDir {
+        dirs("libs")
+    }
 }
 
 loom {
@@ -45,7 +49,7 @@ dependencies {
     // Kotlin standard library
     modImplementation(kotlin("stdlib", project.property("kotlin_version").toString()))
 
-    modImplementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    modImplementation(files("libs/rush-${project.property("rush_version")}.jar"))
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

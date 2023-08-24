@@ -8,6 +8,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object Vulcan : ModInitializer {
+    const val MODID = "vulcan"
+    const val MODNAME = "Vulcan"
+    const val VERSION = "b1"
+    const val NAME_UNICODE = "\\u0056\\u0075\\u006c\\u0063\\u0061\\u006e"
+
     val EVENTBUS: ReflectionEventBus = ConcurrentEventBus()
 
     // This logger is used to write text to the console and the log file.
