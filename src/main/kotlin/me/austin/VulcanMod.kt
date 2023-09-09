@@ -5,12 +5,8 @@ import me.austin.rush.ConcurrentEventBus
 import me.austin.rush.ReflectionEventBus
 import net.fabricmc.api.ModInitializer
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import kotlin.properties.Delegates
-
 object VulcanMod : Vulcan(), ModInitializer {
-    var time by Delegates.notNull<Long>()
+    var start = System.currentTimeMillis()
 
     val EVENTBUS: ReflectionEventBus = ConcurrentEventBus()
 
@@ -19,6 +15,6 @@ object VulcanMod : Vulcan(), ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
 
-        time = System.currentTimeMillis()
+        start = System.currentTimeMillis()
     }
 }

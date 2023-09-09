@@ -18,7 +18,7 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "me.austin.Vulcan"
+        "value": "me.austin.VulcanMod"
       }
     ],
     "client": [
@@ -39,7 +39,7 @@
     "fabricloader": ">=0.14.22",
     "minecraft": "~1.19",
     "java": ">=17",
-    "fabric-language-kotlin": ">=1.10.8+kotlin.1.9.0"
+    "fabric-language-kotlin": ">=1.10.10+kotlin.1.9.10"
   },
   "suggests": {
     "another-mod": "*"

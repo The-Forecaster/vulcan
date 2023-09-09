@@ -11,13 +11,13 @@ object VulcanClient : Vulcan(), ClientModInitializer {
     private const val DEFAULT_CONFIG = "Vulcan_config.json"
 
     override fun onInitializeClient() {
-        val configFolder = Path.of("${MinecraftClient.getInstance().runDirectory}\\${CLIENT_FOLDER}")
+        val configFile = Path.of("${MinecraftClient.getInstance().runDirectory}\\${CLIENT_FOLDER}\\${DEFAULT_CONFIG}")
 
-        if (!Files.exists(configFolder)) {
-            Files.createDirectory(configFolder)
-            Files.createFile(Path.of("${MinecraftClient.getInstance().runDirectory}\\${CLIENT_FOLDER}\\${DEFAULT_CONFIG}"))
+        if (!Files.exists(configFile)) {
+            Files.createDirectory(configFile.parent)
+            Files.createFile(configFile)
         }
 
-        LOGGER.info("Loaded ${MOD_NAME}-${VERSION} in ${System.currentTimeMillis() - VulcanMod.time}ms")
+        LOGGER.info("Loaded ${MOD_NAME}-${VERSION} in ${System.currentTimeMillis() - VulcanMod.start}ms")
     }
 }
