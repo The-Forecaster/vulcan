@@ -10,7 +10,7 @@ class KeyEvent(val key: Int) : Cancellable {
 data class TickEvent(val isInWorld: Boolean)
 
 abstract class PacketEvent(val packet: Packet<*>) : Cancellable {
-    override var isCancelled = false
+    final override var isCancelled = false
 
     class PreSend(packet: Packet<*>) : PacketEvent(packet)
 

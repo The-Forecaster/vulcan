@@ -17,7 +17,7 @@ data class Friend(override val name: String, val uuid: UUID) :  Name
 object FriendManager : Manager<Friend, MutableList<Friend>>, Wrapper {
     override val values = ArrayList<Friend>()
 
-    private val friendFile = File("${VulcanClient.configFile}/friends.json")
+    private val friendFile = File("${VulcanClient.configFile}\\friends.json")
 
     override fun load() {
         if (!friendFile.exists()) {

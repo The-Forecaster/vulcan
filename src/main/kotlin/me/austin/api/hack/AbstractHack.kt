@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.BuiltInExceptions
 import kotlinx.serialization.json.*
 import me.austin.api.*
 import me.austin.api.Vulcan.Companion.LOGGER
+import me.austin.api.setting.NumberSetting
 import me.austin.impl.command.argument.getSetting
 import me.austin.impl.command.argument.setting
 import me.austin.impl.events.KeyEvent
@@ -27,10 +28,10 @@ import java.nio.file.Path
 abstract class AbstractHack(final override val name: String, override val description: String) : Name, Description, Wrapper {
     private val path: Path = Path.of("${HackManager.directory}/$name.json")
 
-    private val keyBind = ShortSetting("KeyBind", 0)
+    private val keyBind = IntSetting("KeyBind", 0)
 
     private val keyListener = listener<KeyEvent> {
-        if (it.key.toShort() == this.keyBind.value) {
+        if (it.key == this.keyBind.value) {
             this.toggle()
             it.cancel()
         }
@@ -89,13 +90,12 @@ abstract class AbstractHack(final override val name: String, override val descri
 
             this.isEnabled = json["enabled"]!!.jsonPrimitive.boolean
 
-            for (setting in settings.allSettings) {
+            for (setting in settings.allSettings()) {
                 when (setting) {
                     is BooleanSetting -> setting.set(json[setting.name]!!.jsonPrimitive.boolean)
                     is DoubleSetting -> setting.set(json[setting.name]!!.jsonPrimitive.double)
                     is FloatSetting -> setting.set(json[setting.name]!!.jsonPrimitive.float)
                     is IntSetting -> setting.set(json[setting.name]!!.jsonPrimitive.int)
-                    is ShortSetting -> setting.set(json[setting.name]!!.jsonPrimitive.int.toShort())
                     is LongSetting -> setting.set(json[setting.name]!!.jsonPrimitive.long)
                     is EnumSetting -> setting.set(json[setting.name].toString())
                 }
@@ -112,7 +112,7 @@ abstract class AbstractHack(final override val name: String, override val descri
 
     private fun save(path: Path = this.path) {
         try {
-            path.writeToJson(JsonObject(this.settings.allSettings.associate {
+            path.writeToJson(JsonObject(this.settings.allSettings().associate {
                 it.name to when (it) {
                     is BooleanSetting -> JsonPrimitive(it.value)
                     is NumberSetting<*> -> JsonPrimitive(it.value)
@@ -152,7 +152,6 @@ abstract class AbstractHack(final override val name: String, override val descri
                         is DoubleSetting -> setting.set(input.toDouble())
                         is FloatSetting -> setting.set(input.toFloat())
                         is IntSetting -> setting.set(input.toInt())
-                        is ShortSetting -> setting.set(input.toShort())
                         is LongSetting -> setting.set(input.toLong())
                         is EnumSetting<*> -> if (!setting.set(input)) throw BuiltInExceptions().dispatcherUnknownArgument()
                             .create()

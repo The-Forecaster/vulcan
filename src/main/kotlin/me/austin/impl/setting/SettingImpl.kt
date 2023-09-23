@@ -19,7 +19,7 @@ class EnumSetting<T : Enum<*>>(
      * set function but accepts a string instead of an enum constant
      *
      * @param other string to set the enum value to
-     * @return true if the string is able to be set to one of the enum constants in this setting
+     * @return true if the string matches one of the enum constants in this setting
      */
     fun set(other: String): Boolean {
         for (value in this.default.javaClass.enumConstants) {
@@ -37,12 +37,6 @@ class LongSetting(name: String, default: Long) :
 
 class IntSetting(name: String, default: Int) :
     NumberSetting<Int>(name, default, 1)
-
-class ShortSetting(name: String, default: Short) :
-    NumberSetting<Short>(name, default, 1)
-
-class ByteSetting(name: String, default: Byte) :
-    NumberSetting<Byte>(name, default, 1)
 
 class DoubleSetting(
     name: String, default: Double, increment: Double

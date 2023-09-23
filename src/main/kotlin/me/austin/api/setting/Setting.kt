@@ -22,10 +22,7 @@ abstract class NumberSetting<T : Number>(
     override var value = default
 }
 
-interface Minimum<T : Number> {
+interface Constrained<T : Number, S : NumberSetting<T>> {
     val minimum: T
-}
-
-interface Maximum<T : Number> {
-    val minimum: T
+    val maximum: T
 }

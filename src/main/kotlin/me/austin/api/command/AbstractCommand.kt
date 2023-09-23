@@ -3,12 +3,11 @@ package me.austin.api.command
 import com.mojang.brigadier.Command.SINGLE_SUCCESS
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.exceptions.BuiltInExceptions
 import me.austin.api.Modular
 import me.austin.api.Wrapper
+import me.austin.util.clientSend
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import me.austin.util.clientSend
 
 /**
  * Most of this is copied or inspired from Meteor client, they got it working so why change it
@@ -17,8 +16,6 @@ import me.austin.util.clientSend
 abstract class AbstractCommand(
     name: String, description: String, private val syntax: String, private vararg val aliases: String
 ) : Modular(name, description), Wrapper {
-    protected val builtin = BuiltInExceptions()
-
     fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         this.register(dispatcher, this.name)
         for (alias in aliases) this.register(dispatcher, alias)
