@@ -1,6 +1,6 @@
 plugins {
     java
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.10"
     id("fabric-loom") version "1.3-SNAPSHOT"
     `maven-publish`
 }
@@ -34,6 +34,7 @@ loom {
         }
     }
 }
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
@@ -49,7 +50,11 @@ dependencies {
     // Kotlin standard library
     modImplementation(kotlin("stdlib", "${project.property("kotlin_version")}"))
 
+    // Event Manager
     modImplementation(files("libs/rush-${project.property("rush_version")}.jar"))
+
+    // Command API
+    modImplementation(fabricApi.module("fabric-command-api-v2", "${project.property("fabric_version")}"))
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

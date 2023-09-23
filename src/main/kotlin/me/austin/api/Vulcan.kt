@@ -1,5 +1,7 @@
 package me.austin.api
 
+import me.austin.rush.ConcurrentEventBus
+import me.austin.rush.ReflectionEventBus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -15,5 +17,8 @@ abstract class Vulcan {
         // The JvmField annotation allows this field to be accessed directly by .java files
         @JvmField
         val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
+
+        @JvmField
+        val EVENT_MANAGER: ReflectionEventBus = ConcurrentEventBus()
     }
 }
