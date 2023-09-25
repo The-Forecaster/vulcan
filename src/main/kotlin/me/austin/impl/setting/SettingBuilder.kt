@@ -1,82 +1,110 @@
 package me.austin.impl.setting
 
-import me.austin.api.Description
-import me.austin.api.setting.Constrained
 import me.austin.api.setting.NumberSetting
 import me.austin.api.setting.Setting
 
-abstract class SettingBuilder<T>(val name: String, protected val default: T) {
-    protected var description: String? = null
+abstract class SettingBuilder<T, S : Setting<*>> internal constructor(val name: String, protected val default: T) {
+    private var description: String? = null
 
-    fun withDescription(description: String): SettingBuilder<T> {
+    fun withDescription(description: String): SettingBuilder<T, S> {
         this.description = description
+
         return this
     }
 
-    abstract fun build(): Setting<T>
+    abstract fun build(): S
 }
 
-class NumberSettingBuilder<T : Number>(name: String, default: T) : SettingBuilder<T>(name, default) {
-    private var increment: T? = null
-    private var minumum: T? = null
-    private var maximum: T? = null
+class BooleanSettingBuilder(name: String, default: Boolean) : SettingBuilder<Boolean, BooleanSetting>(name, default) {
+    override fun build(): BooleanSetting {
+        TODO("Not yet implemented")
+    }
+}
 
-    fun withIncrement(increment: T): NumberSettingBuilder<T> {
+abstract class NumberSettingBuilder<T : Number, S : NumberSetting<T>> internal constructor(name: String, default: T) : SettingBuilder<T, S>(name, default) {
+    protected var increment: T? = null
+    protected var minumum: T? = null
+    protected var maximum: T? = null
+
+    fun withIncrement(increment: T): NumberSettingBuilder<T, S> {
         this.increment = increment
 
         return this
     }
 
-    fun withMinimum(minimum: T): NumberSettingBuilder<T> {
+    fun withMinimum(minimum: T): NumberSettingBuilder<T, S> {
         this.minumum = minimum
 
         return this
     }
 
-    fun withMaximum(maximum: T): NumberSettingBuilder<T> {
+    fun withMaximum(maximum: T): NumberSettingBuilder<T, S> {
         this.maximum = maximum
 
         return this
     }
+}
 
-    override fun build(): Setting<T> {
-        when (this.default) {
-            is Int -> {
-                if (this.minumum != null || this.maximum != null) {
-                    if (this.description != null) {
-                        class ConstrainedIntSettingWithDescription(
-                            name: String,
-                            default: Int,
-                            increment: Int,
-                            override val description: String,
-                            override val minimum: Int,
-                            override val maximum: Int
-                        ) : NumberSetting<Int>(name, default, increment),
-                            Constrained<Int, ConstrainedIntSettingWithDescription>, Description
-
-                        return ConstrainedIntSettingWithDescription(
-                            this.name,
-                            this.default,
-                            this.increment ?: 1,
-                            this.description,
-                            this.minumum ?: -100,
-                            this.maximum ?: 100
-                        )
-                    }
-                }
-            }
-
-            is Long -> {
-
-            }
-
-            is Float -> {
-
-            }
-
-            is Double -> {
-
-            }
+class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, IntSetting>(name, default) {
+    override fun build(): IntSetting {
+        if (this.minumum == null) {
+            this.minumum = -20
         }
+
+        if (this.maximum == null) {
+            this.maximum = 20
+        }
+
+        return IntSetting(this.name, this.default, this.minumum!!, this.maximum!!)
+    }
+}
+
+class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Long, LongSetting>(name, default) {
+    override fun build(): LongSetting {
+        if (this.minumum == null) {
+            this.minumum = -20
+        }
+
+        if (this.maximum == null) {
+            this.maximum = 20
+        }
+
+        return LongSetting(this.name, this.default, this.minumum!!, this.maximum!!)
+    }
+}
+
+class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<Float, FloatSetting>(name, default) {
+    override fun build(): FloatSetting {
+        if (this.increment == null) {
+            this.increment = 0.1f
+        }
+
+        if (this.minumum == null) {
+            this.minumum = -20f
+        }
+
+        if (this.maximum == null) {
+            this.maximum = 20f
+        }
+
+        return FloatSetting(this.name, this.default, this.increment!!, this.minumum!!, this.maximum!!)
+    }
+}
+
+class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder<Double, DoubleSetting>(name, default) {
+    override fun build(): DoubleSetting {
+        if (this.increment == null) {
+            this.increment = 0.1
+        }
+
+        if (this.minumum == null) {
+            this.minumum = -20.0
+        }
+
+        if (this.maximum == null) {
+            this.maximum = 20.0
+        }
+
+        return DoubleSetting(this.name, this.default, this.increment!!, this.minumum!!, this.maximum!!)
     }
 }

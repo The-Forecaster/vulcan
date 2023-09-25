@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
     @Inject(at = @At("HEAD"), method = "loadWorld")
-    private void init(CallbackInfo info) {
+    private void init(final CallbackInfo info) {
         VulcanMod.LOGGER.info("Started Mixins");
     }
 }

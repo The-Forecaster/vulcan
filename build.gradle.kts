@@ -36,6 +36,11 @@ loom {
 }
 
 dependencies {
+    fun library(module: Any) {
+        include(module)
+        modImplementation(module)
+    }
+
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
@@ -48,13 +53,13 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("fabric_kotlin_version")}")
 
     // Kotlin standard library
-    modImplementation(kotlin("stdlib", "${project.property("kotlin_version")}"))
+    library(kotlin("stdlib", "${project.property("kotlin_version")}"))
 
     // Event Manager
-    modImplementation(files("libs/rush-${project.property("rush_version")}.jar"))
+    library(files("libs/rush-${project.property("rush_version")}.jar"))
 
     // Command API
-    modImplementation(fabricApi.module("fabric-command-api-v2", "${project.property("fabric_version")}"))
+    library(fabricApi.module("fabric-command-api-v2", "${project.property("fabric_version")}"))
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

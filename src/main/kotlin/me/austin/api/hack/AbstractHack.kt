@@ -22,13 +22,14 @@ import me.austin.util.fromJson
 import me.austin.util.writeToJson
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
+import org.lwjgl.glfw.GLFW
 import java.nio.file.Files
 import java.nio.file.Path
 
 abstract class AbstractHack(final override val name: String, override val description: String) : Name, Description, Wrapper {
     private val path: Path = Path.of("${HackManager.directory}/$name.json")
 
-    private val keyBind = IntSetting("KeyBind", 0)
+    private val keyBind: IntSetting = IntSettingBuilder("KeyBind", GLFW.GLFW_KEY_UNKNOWN).withMinimum(0).withMaximum(256).build()
 
     private val keyListener = listener<KeyEvent> {
         if (it.key == this.keyBind.value) {
@@ -67,7 +68,9 @@ abstract class AbstractHack(final override val name: String, override val descri
         }
     }
 
-    fun toggle() = if (this.isEnabled) disable() else enable()
+    fun toggle() {
+        if (this.isEnabled) disable() else enable()
+    }
 
     open fun onEnable() {}
 

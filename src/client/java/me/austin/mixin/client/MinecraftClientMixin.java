@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
     @Inject(at = @At("HEAD"), method = "run")
-    private void run(CallbackInfo info) {
+    private void run(final CallbackInfo info) {
         VulcanClient.LOGGER.info("Started Client Mixins");
     }
 }

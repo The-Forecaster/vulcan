@@ -17,12 +17,7 @@ interface Children {
 }
 
 abstract class NumberSetting<T : Number>(
-    override val name: String, final override val default: T, protected val increment: T
+    final override val name: String, final override val default: T, protected val increment: T, val minimum: T, val maximum: T
 ) : Setting<T> {
-    override var value = default
-}
-
-interface Constrained<T : Number, S : NumberSetting<T>> {
-    val minimum: T
-    val maximum: T
+    final override var value = default
 }

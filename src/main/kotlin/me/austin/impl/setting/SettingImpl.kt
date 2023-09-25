@@ -4,13 +4,13 @@ import me.austin.api.setting.NumberSetting
 import me.austin.api.setting.Setting
 import me.austin.util.round
 
-class BooleanSetting(
+class BooleanSetting internal constructor(
     override val name: String, override val default: Boolean
 ) : Setting<Boolean> {
     override var value = default
 }
 
-class EnumSetting<T : Enum<*>>(
+class EnumSetting<T : Enum<*>> internal constructor(
     override val name: String,  override val default: T
 ) : Setting<T> {
     override var value = default
@@ -32,19 +32,19 @@ class EnumSetting<T : Enum<*>>(
     }
 }
 
-class LongSetting(name: String, default: Long) :
-    NumberSetting<Long>(name, default, 1L)
+class LongSetting internal constructor(name: String, default: Long, minimum: Long, maximum: Long) :
+    NumberSetting<Long>(name, default, 1L, minimum, maximum)
 
-class IntSetting(name: String, default: Int) :
-    NumberSetting<Int>(name, default, 1)
+class IntSetting internal constructor(name: String, default: Int, minimum: Int, maximum: Int) :
+    NumberSetting<Int>(name, default, 1, minimum, maximum)
 
-class DoubleSetting(
-    name: String, default: Double, increment: Double
-) : NumberSetting<Double>(name, default, increment) {
+class DoubleSetting internal constructor(
+    name: String, default: Double, increment: Double, minimum: Double, maximum: Double
+) : NumberSetting<Double>(name, default, increment, minimum, maximum) {
     fun set(other: Double, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
 }
 
-class FloatSetting(name: String, default: Float, increment: Float) :
-    NumberSetting<Float>(name, default, increment) {
+class FloatSetting internal constructor(name: String, default: Float, increment: Float, minimum: Float, maximum: Float) :
+    NumberSetting<Float>(name, default, increment, minimum, maximum) {
     fun set(other: Float, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
 }

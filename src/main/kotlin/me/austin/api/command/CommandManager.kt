@@ -18,8 +18,6 @@ object CommandManager : Manager<AbstractCommand, List<AbstractCommand>>, Wrapper
 
     var prefix = '.'
 
-    class ChatCommandSource(mc: MinecraftClient) : ClientCommandSource(mc.networkHandler, mc)
-
     override fun load() {
         ClientCommandRegistrationCallback.EVENT.register { commandDispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             for (command in values) {
@@ -36,4 +34,6 @@ object CommandManager : Manager<AbstractCommand, List<AbstractCommand>>, Wrapper
 
 
     override fun unload() {}
+
+    class ChatCommandSource(mc: MinecraftClient) : ClientCommandSource(mc.networkHandler, mc)
 }
