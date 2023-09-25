@@ -10,9 +10,10 @@ import me.austin.util.fromJson
 import me.austin.util.writeToJson
 import net.minecraft.client.network.ClientPlayerEntity
 import java.io.File
-import java.util.*
+import java.util.UUID
+import kotlin.collections.ArrayList
 
-data class Friend(override val name: String, val uuid: UUID) :  Name
+data class Friend(override val name: String, val uuid: UUID) : Name
 
 object FriendManager : Manager<Friend, MutableList<Friend>>, Wrapper {
     override val values = ArrayList<Friend>()

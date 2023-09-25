@@ -33,7 +33,7 @@ fun getHack(context: CommandContext<*>, name: String): AbstractHack =
 class SettingArgumentType internal constructor(private val hack: AbstractHack) : ArgumentType<Setting<*>> {
     @Throws(CommandSyntaxException::class)
     override fun parse(reader: StringReader): Setting<*> =
-        hack.settings.get(reader.readString()) ?: throw BuiltInExceptions().dispatcherUnknownArgument().create()
+        hack.settings[reader.readString()] ?: throw BuiltInExceptions().dispatcherUnknownArgument().create()
 
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>, builder: SuggestionsBuilder?

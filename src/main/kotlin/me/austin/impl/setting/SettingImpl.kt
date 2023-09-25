@@ -4,14 +4,14 @@ import me.austin.api.setting.NumberSetting
 import me.austin.api.setting.Setting
 import me.austin.util.round
 
-class BooleanSetting internal constructor(
-    override val name: String, override val default: Boolean
+open class BooleanSetting internal constructor(
+    final override val name: String, final override val default: Boolean
 ) : Setting<Boolean> {
     override var value = default
 }
 
-class EnumSetting<T : Enum<*>> internal constructor(
-    override val name: String,  override val default: T
+open class EnumSetting<T : Enum<*>> internal constructor(
+    final override val name: String,  final override val default: T
 ) : Setting<T> {
     override var value = default
 
@@ -32,19 +32,19 @@ class EnumSetting<T : Enum<*>> internal constructor(
     }
 }
 
-class LongSetting internal constructor(name: String, default: Long, minimum: Long, maximum: Long) :
-    NumberSetting<Long>(name, default, 1L, minimum, maximum)
+open class LongSetting internal constructor(name: String, default: Long) :
+    NumberSetting<Long>(name, default, 1L)
 
-class IntSetting internal constructor(name: String, default: Int, minimum: Int, maximum: Int) :
-    NumberSetting<Int>(name, default, 1, minimum, maximum)
+open class IntSetting internal constructor(name: String, default: Int) :
+    NumberSetting<Int>(name, default, 1)
 
-class DoubleSetting internal constructor(
-    name: String, default: Double, increment: Double, minimum: Double, maximum: Double
-) : NumberSetting<Double>(name, default, increment, minimum, maximum) {
+open class DoubleSetting internal constructor(
+    name: String, default: Double, increment: Double
+) : NumberSetting<Double>(name, default, increment) {
     fun set(other: Double, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
 }
 
-class FloatSetting internal constructor(name: String, default: Float, increment: Float, minimum: Float, maximum: Float) :
-    NumberSetting<Float>(name, default, increment, minimum, maximum) {
+open class FloatSetting internal constructor(name: String, default: Float, increment: Float) :
+    NumberSetting<Float>(name, default, increment) {
     fun set(other: Float, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
 }

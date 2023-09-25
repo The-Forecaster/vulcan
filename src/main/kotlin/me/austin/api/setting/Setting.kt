@@ -13,11 +13,16 @@ interface Setting<T> : Name {
 }
 
 interface Children {
-    val children: Array<Setting<*>>
+    val children: Array<out Setting<*>>
+}
+
+interface Constrained<T : Number> {
+    val minimum: T
+    val maximum: T
 }
 
 abstract class NumberSetting<T : Number>(
-    final override val name: String, final override val default: T, protected val increment: T, val minimum: T, val maximum: T
+    final override val name: String, final override val default: T, protected val increment: T
 ) : Setting<T> {
     final override var value = default
 }
