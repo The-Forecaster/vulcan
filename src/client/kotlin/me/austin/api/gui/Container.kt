@@ -1,5 +1,5 @@
 package me.austin.api.gui
 
 interface Container {
-    val children: Collection<Component>
+    val children: List<Component>
 }

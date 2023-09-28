@@ -3,6 +3,7 @@ package me.austin.impl.friend
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import me.austin.VulcanClient
+import me.austin.VulcanMod
 import me.austin.api.Manager
 import me.austin.api.Name
 import me.austin.api.Wrapper
@@ -18,7 +19,7 @@ data class Friend(override val name: String, val uuid: UUID) : Name
 object FriendManager : Manager<Friend, MutableList<Friend>>, Wrapper {
     override val values = ArrayList<Friend>()
 
-    private val friendFile = File("${VulcanClient.configFile}\\friends.json")
+    private val friendFile = File("${VulcanMod.configFile}\\friends.json")
 
     override fun load() {
         if (!friendFile.exists()) {

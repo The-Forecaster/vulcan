@@ -41,10 +41,14 @@ open class IntSetting internal constructor(name: String, default: Int) :
 open class DoubleSetting internal constructor(
     name: String, default: Double, increment: Double
 ) : NumberSetting<Double>(name, default, increment) {
-    fun set(other: Double, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
+    fun set(other: Double, round: Boolean) {
+        if (round) this.value = other.round(this.increment) else this.value = other
+    }
 }
 
 open class FloatSetting internal constructor(name: String, default: Float, increment: Float) :
     NumberSetting<Float>(name, default, increment) {
-    fun set(other: Float, round: Boolean) = if (round) this.value = other.round(this.increment) else this.value = other
+    fun set(other: Float, round: Boolean) {
+        if (round) this.value = other.round(this.increment) else this.value = other
+    }
 }

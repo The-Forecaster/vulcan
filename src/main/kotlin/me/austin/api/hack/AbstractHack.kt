@@ -9,27 +9,33 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.BuiltInExceptions
 import kotlinx.serialization.json.*
-import me.austin.api.*
+import me.austin.api.Description
+import me.austin.api.Name
+import me.austin.api.Vulcan
 import me.austin.api.Vulcan.Companion.LOGGER
+import me.austin.api.Wrapper
 import me.austin.api.setting.NumberSetting
 import me.austin.impl.command.argument.getSetting
 import me.austin.impl.command.argument.setting
 import me.austin.impl.events.KeyEvent
+import me.austin.impl.hack.HackManager
 import me.austin.impl.setting.*
+import me.austin.rush.Listener
 import me.austin.rush.listener
 import me.austin.util.clearJson
+import me.austin.util.error
 import me.austin.util.fromJson
 import me.austin.util.writeToJson
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
-import org.lwjgl.glfw.GLFW
 import java.nio.file.Files
 import java.nio.file.Path
 
-abstract class AbstractHack(final override val name: String, override val description: String) : Name, Description, Wrapper {
+abstract class AbstractHack(final override val name: String, override val description: String, key: Int = -1) : Name, Description,
+    Wrapper {
     private val path: Path = Path.of("${HackManager.directory}/$name.json")
 
-    private val keyBind: IntSetting = IntSettingBuilder("KeyBind", GLFW.GLFW_KEY_UNKNOWN).withMinimum(0).withMaximum(256).build()
+    private val keyBind: IntSetting = IntSettingBuilder("KeyBind").default(key).build()
 
     private val keyListener = listener<KeyEvent> {
         if (it.key == this.keyBind.value) {
@@ -40,10 +46,10 @@ abstract class AbstractHack(final override val name: String, override val descri
 
     // This is the list of settings for the hack
     // if a setting isn't contained here then the client won't be able to find it
-    open val settings = Settings(keyBind)
+    open val settings = Settings(this.keyBind)
 
     // These will be registered every time this hack is enabled
-    open val listeners = listOf(keyListener)
+    open val listeners = listOf<Listener>(keyListener)
 
     var isEnabled = false
         private set
@@ -138,41 +144,44 @@ abstract class AbstractHack(final override val name: String, override val descri
     }
 
     fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        dispatcher.register(
-            this.build(literal<FabricClientCommandSource>(this.name).then(
+        dispatcher.register(this.build(
+            literal<FabricClientCommandSource>(this.name).then(
                 argument("setting", setting(this))
             ).executes {
                 it.source.sendFeedback(Text.of("§a$name is set to ${getSetting(it, "setting", this)?.value}"))
 
                 SINGLE_SUCCESS
-            }.then(argument("value", word()))).executes {
-                val input = getString(it, "value")
-                val setting = getSetting(it, "setting", this) ?: throw BuiltInExceptions().dispatcherUnknownArgument().create()
+            }.then(argument("value", word()))
+        ).executes {
+            val input = getString(it, "value")
+            val setting =
+                getSetting(it, "setting", this) ?: throw BuiltInExceptions().dispatcherUnknownArgument().create()
 
-                try {
-                    when (setting) {
-                        is BooleanSetting -> setting.set(input.toBoolean())
-                        is DoubleSetting -> setting.set(input.toDouble())
-                        is FloatSetting -> setting.set(input.toFloat())
-                        is IntSetting -> setting.set(input.toInt())
-                        is LongSetting -> setting.set(input.toLong())
-                        is EnumSetting<*> -> if (!setting.set(input)) throw BuiltInExceptions().dispatcherUnknownArgument()
-                            .create()
-                        else -> {
-                            it.source.sendFeedback(Text.of("You cannot set that setting like this"))
-                            throw BuiltInExceptions().dispatcherUnknownArgument().create()
-                        }
+            try {
+                when (setting) {
+                    is BooleanSetting -> setting.set(input.toBoolean())
+                    is DoubleSetting -> setting.set(input.toDouble())
+                    is FloatSetting -> setting.set(input.toFloat())
+                    is IntSetting -> setting.set(input.toInt())
+                    is LongSetting -> setting.set(input.toLong())
+                    is EnumSetting<*> -> if (!setting.set(input)) throw BuiltInExceptions().dispatcherUnknownArgument()
+                        .create()
+
+                    else -> {
+                        this.error("You cannot set that setting like this")
+                        throw BuiltInExceptions().dispatcherUnknownArgument().create()
                     }
-
-                    it.source.sendFeedback(Text.of("§a${setting.name} set to $input"))
-                } catch (e: Exception) {
-                    throw BuiltInExceptions().dispatcherUnknownArgument().create()
                 }
 
-                SINGLE_SUCCESS
+                it.source.sendFeedback(Text.of("§a${setting.name} set to $input"))
+            } catch (e: Exception) {
+                throw BuiltInExceptions().dispatcherUnknownArgument().create()
             }
-        )
+
+            SINGLE_SUCCESS
+        })
     }
 
-    open fun build(builder: LiteralArgumentBuilder<FabricClientCommandSource>): LiteralArgumentBuilder<FabricClientCommandSource> = builder
+    open fun build(builder: LiteralArgumentBuilder<FabricClientCommandSource>): LiteralArgumentBuilder<FabricClientCommandSource> =
+        builder
 }

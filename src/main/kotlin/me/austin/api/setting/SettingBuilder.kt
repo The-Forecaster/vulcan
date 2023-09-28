@@ -1,44 +1,51 @@
 package me.austin.api.setting
 
-abstract class AbstractSettingBuilder<T, S : Setting<*>> internal constructor(val name: String, protected val default: T) {
+abstract class AbstractSettingBuilder<T, S : Setting<*>, B : AbstractSettingBuilder<T, S, B>> internal constructor(protected val name: String) {
+    protected var default: T? = null
     protected var description: String? = null
     protected var children: Array<out Setting<*>>? = null
 
-    fun withDescription(description: String): AbstractSettingBuilder<T, S> {
-        this.description = description
+    fun default(default: T): B {
+        this.default = default
 
-        return this
+        return this as B
     }
 
-    fun withChildren(vararg children: Setting<*>): AbstractSettingBuilder<T, S> {
+    fun description(description: String): B {
+        this.description = description
+
+        return this as B
+    }
+
+    fun children(vararg children: Setting<*>): B {
         this.children = children
 
-        return this
+        return this as B
     }
 
     abstract fun build(): S
 }
 
-abstract class NumberSettingBuilder<T : Number, S : NumberSetting<T>> internal constructor(name: String, default: T) : AbstractSettingBuilder<T, S>(name, default) {
+abstract class NumberSettingBuilder<T : Number, S : NumberSetting<T>, B : NumberSettingBuilder<T, S, B>> internal constructor(name: String) : AbstractSettingBuilder<T, S, B>(name) {
     protected var increment: T? = null
     protected var minumum: T? = null
     protected var maximum: T? = null
 
-    fun withIncrement(increment: T): NumberSettingBuilder<T, S> {
+    fun increment(increment: T): B {
         this.increment = increment
 
-        return this
+        return this as B
     }
 
-    fun withMinimum(minimum: T): NumberSettingBuilder<T, S> {
+    fun minimum(minimum: T): B {
         this.minumum = minimum
 
-        return this
+        return this as B
     }
 
-    fun withMaximum(maximum: T): NumberSettingBuilder<T, S> {
+    fun maximum(maximum: T): B {
         this.maximum = maximum
 
-        return this
+        return this as B
     }
 }

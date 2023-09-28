@@ -11,7 +11,9 @@ import me.austin.api.setting.Setting
 class Settings(private val values: List<Setting<*>>) {
     constructor(vararg settings: Setting<*>) : this(settings.toList())
 
-    operator fun get(setting: String) = this.allSettings().find { it.name.lowercase() == setting.lowercase() }
+    operator fun get(setting: String): Setting<*>? {
+        return this.allSettings().find { it.name.lowercase() == setting.lowercase() }
+    }
 
     fun allSettings(): List<Setting<*>> {
         val list = mutableListOf<Setting<*>>()

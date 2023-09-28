@@ -3,6 +3,7 @@
   "package": "me.austin.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ClientConnectionMixin",
     "MinecraftServerMixin"
   ],
   "injectors": {

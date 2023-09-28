@@ -18,7 +18,10 @@ abstract class AbstractCommand(
 ) : Modular(name, description), Wrapper {
     fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         this.register(dispatcher, this.name)
-        for (alias in aliases) this.register(dispatcher, alias)
+
+        for (alias in aliases) {
+            this.register(dispatcher, alias)
+        }
     }
 
     private fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, name: String) {

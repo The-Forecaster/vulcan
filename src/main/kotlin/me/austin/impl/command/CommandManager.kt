@@ -1,18 +1,20 @@
-package me.austin.api.command
+package me.austin.impl.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import me.austin.api.Manager
 import me.austin.api.Wrapper
+import me.austin.api.command.AbstractCommand
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
+import net.minecraft.command.CommandSource
 
 object CommandManager : Manager<AbstractCommand, List<AbstractCommand>>, Wrapper {
     override val values = listOf<AbstractCommand>()
-    private val dispatcher = CommandDispatcher<ClientCommandSource>()
+    private val dispatcher = CommandDispatcher<CommandSource>()
 
     private val commandSource = ChatCommandSource(minecraft)
 
@@ -28,7 +30,7 @@ object CommandManager : Manager<AbstractCommand, List<AbstractCommand>>, Wrapper
 
     @JvmOverloads
     @Throws(CommandSyntaxException::class)
-    fun dispatch(message: String, source: ClientCommandSource = commandSource) {
+    fun dispatch(message: String, source: CommandSource = commandSource) {
         dispatcher.execute(dispatcher.parse(message, source))
     }
 

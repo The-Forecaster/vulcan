@@ -3,9 +3,8 @@ package me.austin.impl.setting
 import me.austin.api.Description
 import me.austin.api.setting.*
 
-// There has to be a better way to do this
-class BooleanSettingBuilder(name: String, default: Boolean) :
-    AbstractSettingBuilder<Boolean, BooleanSetting>(name, default) {
+// There has to be a better way to do this, but I don't know it so this is what we're going with
+class BooleanSettingBuilder(name: String) : AbstractSettingBuilder<Boolean, BooleanSetting, BooleanSettingBuilder>(name) {
     override fun build(): BooleanSetting {
         if (this.description != null) {
             if (this.children != null) {
@@ -19,7 +18,7 @@ class BooleanSettingBuilder(name: String, default: Boolean) :
                 ), Description, Children
 
                 return BooleanSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default ?: true, this.description!!, this.children!!
                 )
             }
 
@@ -31,7 +30,7 @@ class BooleanSettingBuilder(name: String, default: Boolean) :
                 name, default
             ), Description
 
-            return BooleanSettingWithDescription(this.name, this.default, this.description!!)
+            return BooleanSettingWithDescription(this.name, this.default ?: true, this.description!!)
         } else if (this.children != null) {
             class BooleanSettingWithChildren(
                 name: String, default: Boolean, override val children: Array<out Setting<*>>
@@ -39,16 +38,20 @@ class BooleanSettingBuilder(name: String, default: Boolean) :
                 name, default
             ), Children
 
-            return BooleanSettingWithChildren(this.name, this.default, this.children!!)
+            return BooleanSettingWithChildren(this.name, this.default ?: true, this.children!!)
         }
 
-        return BooleanSetting(this.name, this.default)
+        return BooleanSetting(this.name, this.default ?: true)
     }
 }
 
-class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettingBuilder<T, EnumSetting<T>>(
-    name, default
+class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettingBuilder<T, EnumSetting<T>, EnumSettingBuilder<T>>(
+    name
 ) {
+    init {
+        this.default = default
+    }
+
     override fun build(): EnumSetting<T> {
         if (this.description != null) {
             if (this.children != null) {
@@ -62,7 +65,7 @@ class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettin
                 ), Description, Children
 
                 return EnumSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default!!, this.description!!, this.children!!
                 )
             }
 
@@ -74,7 +77,7 @@ class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettin
                 name, default
             ), Description
 
-            return EnumSettingWithDescription(this.name, this.default, this.description!!)
+            return EnumSettingWithDescription(this.name, this.default!!, this.description!!)
         } else if (this.children != null) {
             class EnumSettingWithChildren(
                 name: String, default: T, override val children: Array<out Setting<*>>
@@ -82,14 +85,14 @@ class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettin
                 name, default
             ), Children
 
-            return EnumSettingWithChildren(this.name, this.default, this.children!!)
+            return EnumSettingWithChildren(this.name, this.default!!, this.children!!)
         }
 
-        return EnumSetting(this.name, this.default)
+        return EnumSetting(this.name, this.default!!)
     }
 }
 
-class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, IntSetting>(name, default) {
+class IntSettingBuilder(name: String) : NumberSettingBuilder<Int, IntSetting, IntSettingBuilder>(name) {
     override fun build(): IntSetting {
         if (this.minumum != null || this.maximum != null) {
             if (this.description != null) {
@@ -105,7 +108,7 @@ class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, 
 
                     return ConstrainedIntSettingWithDescriptionWithChildren(
                         this.name,
-                        this.default,
+                        this.default ?: 0,
                         this.minumum ?: -20,
                         this.maximum ?: 20,
                         this.description!!,
@@ -122,7 +125,7 @@ class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, 
                 ) : IntSetting(name, default), Constrained<Int>, Description
 
                 return ConstrainedIntSettingWithDescription(
-                    this.name, this.default, this.description!!, this.minumum ?: -20, this.maximum ?: 20
+                    this.name, this.default ?: 0, this.description!!, this.minumum ?: -20, this.maximum ?: 20
                 )
             } else if (this.children != null) {
                 class ConstrainedIntSettingWithChildren(
@@ -134,7 +137,7 @@ class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, 
                 ) : IntSetting(name, default), Constrained<Int>, Children
 
                 return ConstrainedIntSettingWithChildren(
-                    this.name, this.default, this.children!!, this.minumum ?: -20, this.maximum ?: 20
+                    this.name, this.default ?: 0, this.children!!, this.minumum ?: -20, this.maximum ?: 20
                 )
             }
         } else if (this.description != null) {
@@ -147,26 +150,26 @@ class IntSettingBuilder(name: String, default: Int) : NumberSettingBuilder<Int, 
                 ) : IntSetting(name, default), Description, Children
 
                 return IntSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default ?: 0, this.description!!, this.children!!
                 )
             }
 
             class IntSettingWithDescription(name: String, default: Int, override val description: String) :
                 IntSetting(name, default), Description
 
-            return IntSettingWithDescription(this.name, this.default, this.description!!)
+            return IntSettingWithDescription(this.name, this.default ?: 0, this.description!!)
         } else if (this.children != null) {
             class IntSettingWithChildren(name: String, default: Int, override val children: Array<out Setting<*>>) :
                 IntSetting(name, default), Children
 
-            return IntSettingWithChildren(this.name, this.default, this.children!!)
+            return IntSettingWithChildren(this.name, this.default ?: 0, this.children!!)
         }
 
-        return IntSetting(this.name, this.default)
+        return IntSetting(this.name, this.default ?: 0)
     }
 }
 
-class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Long, LongSetting>(name, default) {
+class LongSettingBuilder(name: String) : NumberSettingBuilder<Long, LongSetting, LongSettingBuilder>(name) {
     override fun build(): LongSetting {
         if (this.minumum != null || this.maximum != null) {
             if (this.description != null) {
@@ -182,7 +185,7 @@ class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Lon
 
                     return ConstrainedLongSettingWithDescriptionWithChildren(
                         this.name,
-                        this.default,
+                        this.default ?: 0,
                         this.minumum ?: -20,
                         this.maximum ?: 20,
                         this.description!!,
@@ -199,7 +202,7 @@ class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Lon
                 ) : LongSetting(name, default), Constrained<Long>, Description
 
                 return ConstrainedLongSettingWithDescription(
-                    this.name, this.default, this.description!!, this.minumum ?: -20, this.maximum ?: 20
+                    this.name, this.default ?: 0, this.description!!, this.minumum ?: -20, this.maximum ?: 20
                 )
             } else if (this.children != null) {
                 class ConstrainedLongSettingWithChildren(
@@ -211,7 +214,7 @@ class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Lon
                 ) : LongSetting(name, default), Constrained<Long>, Children
 
                 return ConstrainedLongSettingWithChildren(
-                    this.name, this.default, this.children!!, this.minumum ?: -20, this.maximum ?: 20
+                    this.name, this.default ?: 0, this.children!!, this.minumum ?: -20, this.maximum ?: 20
                 )
             }
         } else if (this.description != null) {
@@ -224,26 +227,26 @@ class LongSettingBuilder(name: String, default: Long) : NumberSettingBuilder<Lon
                 ) : LongSetting(name, default), Description, Children
 
                 return LongSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default ?: 0, this.description!!, this.children!!
                 )
             }
 
             class LongSettingWithDescription(name: String, default: Long, override val description: String) :
                 LongSetting(name, default), Description
 
-            return LongSettingWithDescription(this.name, this.default, this.description!!)
+            return LongSettingWithDescription(this.name, this.default ?: 0, this.description!!)
         } else if (this.children != null) {
             class LongSettingWithChildren(name: String, default: Long, override val children: Array<out Setting<*>>) :
                 LongSetting(name, default), Children
 
-            return LongSettingWithChildren(this.name, this.default, this.children!!)
+            return LongSettingWithChildren(this.name, this.default ?: 0, this.children!!)
         }
 
-        return LongSetting(this.name, this.default)
+        return LongSetting(this.name, this.default ?: 0)
     }
 }
 
-class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<Float, FloatSetting>(name, default) {
+class FloatSettingBuilder(name: String) : NumberSettingBuilder<Float, FloatSetting, FloatSettingBuilder>(name) {
     override fun build(): FloatSetting {
         if (this.minumum != null || this.maximum != null) {
             if (this.description != null) {
@@ -259,7 +262,7 @@ class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<F
 
                     return ConstrainedFloatSettingWithDescriptionWithChildren(
                         this.name,
-                        this.default,
+                        this.default ?: 0f,
                         this.minumum ?: -20f,
                         this.maximum ?: 20f,
                         this.description!!,
@@ -276,7 +279,7 @@ class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<F
                 ) : FloatSetting(name, default, this.increment ?: 0.1f), Constrained<Float>, Description
 
                 return ConstrainedFloatSettingWithDescription(
-                    this.name, this.default, this.description!!, this.minumum ?: -20f, this.maximum ?: 20f
+                    this.name, this.default ?: 0f, this.description!!, this.minumum ?: -20f, this.maximum ?: 20f
                 )
             } else if (this.children != null) {
                 class ConstrainedFloatSettingWithChildren(
@@ -288,7 +291,7 @@ class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<F
                 ) : FloatSetting(name, default, this.increment ?: 0.1f), Constrained<Float>, Children
 
                 return ConstrainedFloatSettingWithChildren(
-                    this.name, this.default, this.children!!, this.minumum ?: -20f, this.maximum ?: 20f
+                    this.name, this.default ?: 0f, this.children!!, this.minumum ?: -20f, this.maximum ?: 20f
                 )
             }
         } else if (this.description != null) {
@@ -301,26 +304,26 @@ class FloatSettingBuilder(name: String, default: Float) : NumberSettingBuilder<F
                 ) : FloatSetting(name, default, this.increment ?: 0.1f), Description, Children
 
                 return FloatSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default ?: 0f, this.description!!, this.children!!
                 )
             }
 
             class FloatSettingWithDescription(name: String, default: Float, override val description: String) :
                 FloatSetting(name, default, this.increment ?: 0.1f), Description
 
-            return FloatSettingWithDescription(this.name, this.default, this.description!!)
+            return FloatSettingWithDescription(this.name, this.default ?: 0f, this.description!!)
         } else if (this.children != null) {
             class FloatSettingWithChildren(name: String, default: Float, override val children: Array<out Setting<*>>) :
                 FloatSetting(name, default, this.increment ?: 0.1f), Children
 
-            return FloatSettingWithChildren(this.name, this.default, this.children!!)
+            return FloatSettingWithChildren(this.name, this.default ?: 0f, this.children!!)
         }
 
-        return FloatSetting(this.name, this.default, this.increment!!)
+        return FloatSetting(this.name, this.default ?: 0f, this.increment!!)
     }
 }
 
-class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder<Double, DoubleSetting>(name, default) {
+class DoubleSettingBuilder(name: String) : NumberSettingBuilder<Double, DoubleSetting, DoubleSettingBuilder>(name) {
     override fun build(): DoubleSetting {
         if (this.minumum != null || this.maximum != null) {
             if (this.description != null) {
@@ -336,7 +339,7 @@ class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder
 
                     return ConstrainedDoubleSettingWithDescriptionWithChildren(
                         this.name,
-                        this.default,
+                        this.default ?: 0.0,
                         this.minumum ?: -20.0,
                         this.maximum ?: 20.0,
                         this.description!!,
@@ -353,7 +356,7 @@ class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder
                 ) : DoubleSetting(name, default, this.increment ?: 0.1), Constrained<Double>, Description
 
                 return ConstrainedDoubleSettingWithDescription(
-                    this.name, this.default, this.description!!, this.minumum ?: -20.0, this.maximum ?: 20.0
+                    this.name, this.default ?: 0.0, this.description!!, this.minumum ?: -20.0, this.maximum ?: 20.0
                 )
             } else if (this.children != null) {
                 class ConstrainedDoubleSettingWithChildren(
@@ -365,7 +368,7 @@ class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder
                 ) : DoubleSetting(name, default, this.increment ?: 0.1), Constrained<Double>, Children
 
                 return ConstrainedDoubleSettingWithChildren(
-                    this.name, this.default, this.children!!, this.minumum ?: -20.0, this.maximum ?: 20.0
+                    this.name, this.default ?: 0.0, this.children!!, this.minumum ?: -20.0, this.maximum ?: 20.0
                 )
             }
         } else if (this.description != null) {
@@ -378,22 +381,22 @@ class DoubleSettingBuilder(name: String, default: Double) : NumberSettingBuilder
                 ) : DoubleSetting(name, default, this.increment ?: 0.1), Description, Children
 
                 return DoubleSettingWithDescriptionWithChildren(
-                    this.name, this.default, this.description!!, this.children!!
+                    this.name, this.default ?: 0.0, this.description!!, this.children!!
                 )
             }
 
             class DoubleSettingWithDescription(name: String, default: Double, override val description: String) :
                 DoubleSetting(name, default, this.increment ?: 0.1), Description
 
-            return DoubleSettingWithDescription(this.name, this.default, this.description!!)
+            return DoubleSettingWithDescription(this.name, this.default ?: 0.0, this.description!!)
         } else if (this.children != null) {
             class DoubleSettingWithChildren(
                 name: String, default: Double, override val children: Array<out Setting<*>>
             ) : DoubleSetting(name, default, this.increment ?: 0.1), Children
 
-            return DoubleSettingWithChildren(this.name, this.default, this.children!!)
+            return DoubleSettingWithChildren(this.name, this.default ?: 0.0, this.children!!)
         }
 
-        return DoubleSetting(this.name, this.default, this.increment!!)
+        return DoubleSetting(this.name, this.default ?: 0.0, this.increment!!)
     }
 }

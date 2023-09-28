@@ -1,10 +1,9 @@
-package me.austin.api.hack
+package me.austin.impl.hack
 
 import com.mojang.brigadier.CommandDispatcher
-import me.austin.VulcanClient
+import me.austin.VulcanMod
 import me.austin.api.Manager
-import me.austin.impl.hack.AntiFabric
-import me.austin.impl.hack.AntiKick
+import me.austin.api.hack.AbstractHack
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
@@ -12,9 +11,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 object HackManager : Manager<AbstractHack, List<AbstractHack>> {
-    internal val directory: Path = Path.of("${VulcanClient.configFile}/hacks")
+    internal val directory: Path = Path.of("${VulcanMod.configFile}/hacks")
 
-    override val values = listOf(AntiFabric, AntiKick)
+    override val values = listOf(AntiFabric, AntiKick, CrystalAura)
 
     override fun load() {
         if (Files.notExists(directory)) {
