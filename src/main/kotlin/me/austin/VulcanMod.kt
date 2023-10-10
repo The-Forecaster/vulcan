@@ -2,6 +2,7 @@ package me.austin
 
 import me.austin.api.Vulcan
 import me.austin.impl.command.CommandManager
+import me.austin.impl.gui.ClickGuiScreen
 import me.austin.impl.hack.HackManager
 import net.fabricmc.api.ModInitializer
 import net.minecraft.client.MinecraftClient
@@ -27,6 +28,8 @@ object VulcanMod : Vulcan(), ModInitializer {
 
         CommandManager.load()
         HackManager.load()
+
+        EVENT_MANAGER.subscribe(ClickGuiScreen)
 
         start = System.currentTimeMillis()
     }

@@ -1,6 +1,5 @@
 package me.austin.mixin;
 
-import me.austin.VulcanMod;
 import me.austin.api.Vulcan;
 import me.austin.impl.events.PacketEvent;
 import net.minecraft.network.ClientConnection;

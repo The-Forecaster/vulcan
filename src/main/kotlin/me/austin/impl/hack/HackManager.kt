@@ -15,9 +15,14 @@ object HackManager : Manager<AbstractHack, List<AbstractHack>> {
 
     override val values = listOf(AntiFabric, AntiKick, CrystalAura)
 
+    fun getEnabled(): List<AbstractHack> {
+        return this.values.filter { it.isEnabled }
+    }
+
     override fun load() {
         if (Files.notExists(directory)) {
             Files.createDirectory(directory)
+            return
         }
 
         for (hack in values) {

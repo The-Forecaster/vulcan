@@ -1,5 +1,6 @@
 package me.austin.api.setting
 
+import me.austin.api.Children as VulcanChildren
 import me.austin.api.Name
 
 interface Setting<T> : Name {
@@ -12,8 +13,8 @@ interface Setting<T> : Name {
     }
 }
 
-interface Children {
-    val children: Array<out Setting<*>>
+interface Children : VulcanChildren<Setting<*>> {
+    override val children: Array<out Setting<*>>
 }
 
 interface Constrained<T : Number> {

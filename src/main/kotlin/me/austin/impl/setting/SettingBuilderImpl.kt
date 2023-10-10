@@ -4,7 +4,8 @@ import me.austin.api.Description
 import me.austin.api.setting.*
 
 // There has to be a better way to do this, but I don't know it so this is what we're going with
-class BooleanSettingBuilder(name: String) : AbstractSettingBuilder<Boolean, BooleanSetting, BooleanSettingBuilder>(name) {
+class BooleanSettingBuilder(name: String) :
+    AbstractSettingBuilder<Boolean, BooleanSetting, BooleanSettingBuilder>(name) {
     override fun build(): BooleanSetting {
         if (this.description != null) {
             if (this.children != null) {
@@ -45,9 +46,10 @@ class BooleanSettingBuilder(name: String) : AbstractSettingBuilder<Boolean, Bool
     }
 }
 
-class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) : AbstractSettingBuilder<T, EnumSetting<T>, EnumSettingBuilder<T>>(
-    name
-) {
+class EnumSettingBuilder<T : Enum<*>>(name: String, default: T) :
+    AbstractSettingBuilder<T, EnumSetting<T>, EnumSettingBuilder<T>>(
+        name
+    ) {
     init {
         this.default = default
     }

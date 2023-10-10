@@ -1,6 +1,8 @@
 package me.austin.api.setting
 
-abstract class AbstractSettingBuilder<T, S : Setting<*>, B : AbstractSettingBuilder<T, S, B>> internal constructor(protected val name: String) {
+abstract class AbstractSettingBuilder<T, S : Setting<T>, B : AbstractSettingBuilder<T, S, B>> internal constructor(
+    protected val name: String
+) {
     protected var default: T? = null
     protected var description: String? = null
     protected var children: Array<out Setting<*>>? = null
@@ -26,7 +28,9 @@ abstract class AbstractSettingBuilder<T, S : Setting<*>, B : AbstractSettingBuil
     abstract fun build(): S
 }
 
-abstract class NumberSettingBuilder<T : Number, S : NumberSetting<T>, B : NumberSettingBuilder<T, S, B>> internal constructor(name: String) : AbstractSettingBuilder<T, S, B>(name) {
+abstract class NumberSettingBuilder<T : Number, S : NumberSetting<T>, B : NumberSettingBuilder<T, S, B>> internal constructor(
+    name: String
+) : AbstractSettingBuilder<T, S, B>(name) {
     protected var increment: T? = null
     protected var minumum: T? = null
     protected var maximum: T? = null

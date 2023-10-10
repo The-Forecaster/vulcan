@@ -11,7 +11,7 @@ open class BooleanSetting internal constructor(
 }
 
 open class EnumSetting<T : Enum<*>> internal constructor(
-    final override val name: String,  final override val default: T
+    final override val name: String, final override val default: T
 ) : Setting<T> {
     override var value = default
 
@@ -52,3 +52,4 @@ open class FloatSetting internal constructor(name: String, default: Float, incre
         if (round) this.value = other.round(this.increment) else this.value = other
     }
 }
+

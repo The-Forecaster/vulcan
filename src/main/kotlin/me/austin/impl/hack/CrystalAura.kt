@@ -33,8 +33,8 @@ object CrystalAura : AbstractHack("CrystalAura", "Automatically places and break
     private val alpha = IntSettingBuilder("Alpha").default(100).minimum(0).maximum(255).build()
     private val render = BooleanSettingBuilder("Render").default(true).children(mode, red, green, blue, alpha).build()
 
-    private var yaw = 0.0
-    private var pitch = 0.0
+    private var yaw = 0.0f
+    private var pitch = 0.0f
     private var isSpoofing = false
 
     override val settings = Settings(place, destroy, spoofRotations, chat, render)
@@ -46,7 +46,7 @@ object CrystalAura : AbstractHack("CrystalAura", "Automatically places and break
                         event.cancel()
                         minecraft.networkHandler?.connection?.send(
                             LookAndOnGround(
-                                yaw.toFloat(), pitch.toFloat(), event.packet.isOnGround
+                                yaw, pitch, event.packet.isOnGround
                             )
                         )
                     }
@@ -58,8 +58,8 @@ object CrystalAura : AbstractHack("CrystalAura", "Automatically places and break
                                 player?.x ?: 0.0,
                                 player?.y ?: 0.0,
                                 player?.z ?: 0.0,
-                                yaw.toFloat(),
-                                pitch.toFloat(),
+                                yaw,
+                                pitch,
                                 event.packet.isOnGround
                             )
                         )

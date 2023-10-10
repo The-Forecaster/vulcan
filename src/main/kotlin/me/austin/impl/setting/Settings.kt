@@ -8,8 +8,7 @@ import me.austin.api.setting.Setting
  *
  * Use only once per module
  */
-class Settings(private val values: List<Setting<*>>) {
-    constructor(vararg settings: Setting<*>) : this(settings.toList())
+class Settings(private vararg val values: Setting<*>) {
 
     operator fun get(setting: String): Setting<*>? {
         return this.allSettings().find { it.name.lowercase() == setting.lowercase() }
@@ -18,10 +17,10 @@ class Settings(private val values: List<Setting<*>>) {
     fun allSettings(): List<Setting<*>> {
         val list = mutableListOf<Setting<*>>()
 
-        fun recurse(settings: List<Setting<*>>) {
+        fun recurse(settings: Array<out Setting<*>>) {
             for (setting in settings) {
                 if (setting is Children) {
-                    recurse(setting.children.toList())
+                    recurse(setting.children)
                 }
                 list.add(setting)
             }

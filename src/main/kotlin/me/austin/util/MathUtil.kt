@@ -17,6 +17,7 @@ fun Float.round(increment: Float) = if (abs(this - this.floor(increment)) > abs(
 } else {
     this.floor(increment)
 }
+
 fun Float.ceil(increment: Float) = this.floor(increment) + increment
 
 fun Float.floor(increment: Float) = this - (this % increment)

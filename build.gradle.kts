@@ -1,8 +1,7 @@
 plugins {
     java
     kotlin("jvm") version "1.9.10"
-    id("fabric-loom") version "1.3-SNAPSHOT"
-    `maven-publish`
+    id("fabric-loom") version "1.4-SNAPSHOT"
 }
 
 version = project.property("mod_version")!!
@@ -56,7 +55,7 @@ dependencies {
     library(kotlin("stdlib", "${project.property("kotlin_version")}"))
 
     // Event Manager
-    library(files("libs/rush-${project.property("rush_version")}.jar"))
+    library(files("libs\\rush-${project.property("rush_version")}.jar"))
 
     // Command API
     library(fabricApi.module("fabric-command-api-v2", "${project.property("fabric_version")}"))
@@ -100,22 +99,5 @@ tasks {
         from("LICENSE") {
             rename { "${it}_${base.archivesName.get()}" }
         }
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }

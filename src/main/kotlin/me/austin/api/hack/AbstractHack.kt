@@ -31,9 +31,10 @@ import net.minecraft.text.Text
 import java.nio.file.Files
 import java.nio.file.Path
 
-abstract class AbstractHack(final override val name: String, override val description: String, key: Int = -1) : Name, Description,
-    Wrapper {
-    private val path: Path = Path.of("${HackManager.directory}/$name.json")
+abstract class AbstractHack(final override val name: String, final override val description: String, key: Int = -1) :
+    Name,
+    Description, Wrapper {
+    private val path: Path = Path.of("${HackManager.directory}/${this.name}.json")
 
     private val keyBind: IntSetting = IntSettingBuilder("KeyBind").default(key).build()
 
@@ -75,7 +76,11 @@ abstract class AbstractHack(final override val name: String, override val descri
     }
 
     fun toggle() {
-        if (this.isEnabled) disable() else enable()
+        if (this.isEnabled) {
+            this.disable()
+        } else {
+            this.enable()
+        }
     }
 
     open fun onEnable() {}
@@ -89,31 +94,33 @@ abstract class AbstractHack(final override val name: String, override val descri
             return
         }
 
-        if (this.path.fromJson().isEmpty()) {
+        if (path.fromJson().isEmpty()) {
             this.save()
             return
         }
 
         try {
-            val json = this.path.fromJson(true)
+            val json = path.fromJson(true)
 
             this.isEnabled = json["enabled"]!!.jsonPrimitive.boolean
 
-            for (setting in settings.allSettings()) {
+            for (setting in this.settings.allSettings()) {
                 when (setting) {
                     is BooleanSetting -> setting.set(json[setting.name]!!.jsonPrimitive.boolean)
                     is DoubleSetting -> setting.set(json[setting.name]!!.jsonPrimitive.double)
                     is FloatSetting -> setting.set(json[setting.name]!!.jsonPrimitive.float)
                     is IntSetting -> setting.set(json[setting.name]!!.jsonPrimitive.int)
                     is LongSetting -> setting.set(json[setting.name]!!.jsonPrimitive.long)
-                    is EnumSetting -> setting.set(json[setting.name].toString())
+                    is EnumSetting -> setting.set(json[setting.name]!!.jsonPrimitive.toString())
                 }
             }
-            if (this.isEnabled) Vulcan.EVENT_MANAGER.subscribeAll(this.listeners)
+            if (this.isEnabled) {
+                Vulcan.EVENT_MANAGER.subscribeAll(this.listeners)
+            }
         } catch (e: Exception) {
-            this.path.clearJson()
+            path.clearJson()
 
-            LOGGER.error("$name failed to load")
+            LOGGER.error("${this.name} failed to load settings from file")
 
             e.printStackTrace()
         }
@@ -121,24 +128,28 @@ abstract class AbstractHack(final override val name: String, override val descri
 
     private fun save(path: Path = this.path) {
         try {
-            path.writeToJson(JsonObject(this.settings.allSettings().associate {
+            val map = this.settings.allSettings().associateTo(mutableMapOf()) {
                 it.name to when (it) {
                     is BooleanSetting -> JsonPrimitive(it.value)
                     is NumberSetting<*> -> JsonPrimitive(it.value)
                     else -> JsonPrimitive(it.value.toString())
                 }
-            }.toMutableMap().also {
-                it["enabled"] = JsonPrimitive(isEnabled)
-            }))
+            }
+
+            map["enabled"] = JsonPrimitive(isEnabled)
+
+            path.writeToJson(JsonObject(map))
         } catch (e: Exception) {
-            LOGGER.error("$name failed to save")
+            LOGGER.error("${this.name} failed to save")
 
             e.printStackTrace()
         }
     }
 
     fun unload(path: Path = this.path) {
-        if (this.isEnabled) Vulcan.EVENT_MANAGER.unsubscribeAll(this.listeners)
+        if (this.isEnabled) {
+            Vulcan.EVENT_MANAGER.unsubscribeAll(this.listeners)
+        }
 
         this.save(path)
     }
@@ -148,7 +159,15 @@ abstract class AbstractHack(final override val name: String, override val descri
             literal<FabricClientCommandSource>(this.name).then(
                 argument("setting", setting(this))
             ).executes {
-                it.source.sendFeedback(Text.of("§a$name is set to ${getSetting(it, "setting", this)?.value}"))
+                it.source.sendFeedback(
+                    Text.of(
+                        "§a${this.name} is set to ${
+                            getSetting(
+                                it, "setting", this
+                            )?.value
+                        }"
+                    )
+                )
 
                 SINGLE_SUCCESS
             }.then(argument("value", word()))
@@ -164,8 +183,9 @@ abstract class AbstractHack(final override val name: String, override val descri
                     is FloatSetting -> setting.set(input.toFloat())
                     is IntSetting -> setting.set(input.toInt())
                     is LongSetting -> setting.set(input.toLong())
-                    is EnumSetting<*> -> if (!setting.set(input)) throw BuiltInExceptions().dispatcherUnknownArgument()
-                        .create()
+                    is EnumSetting<*> -> if (!setting.set(input)) {
+                        throw BuiltInExceptions().dispatcherUnknownArgument().create()
+                    }
 
                     else -> {
                         this.error("You cannot set that setting like this")
@@ -182,6 +202,7 @@ abstract class AbstractHack(final override val name: String, override val descri
         })
     }
 
-    open fun build(builder: LiteralArgumentBuilder<FabricClientCommandSource>): LiteralArgumentBuilder<FabricClientCommandSource> =
-        builder
+    open fun build(builder: LiteralArgumentBuilder<FabricClientCommandSource>): LiteralArgumentBuilder<FabricClientCommandSource> {
+        return builder
+    }
 }

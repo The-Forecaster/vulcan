@@ -2,7 +2,6 @@ package me.austin.impl.friend
 
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.austin.VulcanClient
 import me.austin.VulcanMod
 import me.austin.api.Manager
 import me.austin.api.Name
@@ -11,8 +10,7 @@ import me.austin.util.fromJson
 import me.austin.util.writeToJson
 import net.minecraft.client.network.ClientPlayerEntity
 import java.io.File
-import java.util.UUID
-import kotlin.collections.ArrayList
+import java.util.*
 
 data class Friend(override val name: String, val uuid: UUID) : Name
 

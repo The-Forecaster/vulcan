@@ -4,17 +4,17 @@ import me.austin.VulcanMod
 import me.austin.api.Manager
 import me.austin.api.Vulcan
 import me.austin.api.Wrapper
-import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.math.MatrixStack
 import me.austin.api.gui.components.Frame
 import me.austin.api.gui.components.buttons.Button
 import me.austin.api.hack.AbstractHack
-import me.austin.impl.hack.HackManager
 import me.austin.impl.events.KeyEvent
-import me.austin.rush.listener
-import me.austin.impl.friend.FriendManager
 import me.austin.impl.friend.Friend
+import me.austin.impl.friend.FriendManager
+import me.austin.impl.hack.HackManager
+import me.austin.rush.listener
+import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import java.awt.Color
 import java.nio.file.Files
@@ -39,22 +39,23 @@ object ClickGuiScreen : Screen(Text.of(Vulcan.MOD_NAME)), Wrapper, Manager<Frame
     init {
         var offset = 0
 
-        this.values = listOf(object : Frame<AbstractHack>(20, 20, 60, HackManager.values.size * 20, HackManager.values.map { friend ->
-            offset += 20
+        this.values = listOf(object :
+            Frame<AbstractHack>(20, 20, 60, HackManager.values.size * 20, HackManager.values.map { friend ->
+                offset += 20
 
-            object : Button<AbstractHack>(20, offset, 60, 20, friend) {
-                override fun render(stack: MatrixStack) {
-                    DrawableHelper.fill(
-                        stack,
-                        this.xPos,
-                        this.yPos,
-                        this.width + this.xPos,
-                        this.height + this.yPos,
-                        Color.LIGHT_GRAY.rgb
-                    )
+                object : Button<AbstractHack>(20, offset, 60, 20, friend) {
+                    override fun render(stack: MatrixStack) {
+                        DrawableHelper.fill(
+                            stack,
+                            this.xPos,
+                            this.yPos,
+                            this.width + this.xPos,
+                            this.height + this.yPos,
+                            Color.LIGHT_GRAY.rgb
+                        )
+                    }
                 }
-            }
-        }) {
+            }) {
             override fun render(stack: MatrixStack) {
                 DrawableHelper.fill(
                     stack,
